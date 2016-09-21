@@ -1,0 +1,10 @@
+Package: iSeqsR
+Type: Package
+Title: Various bioinformatics tasks
+Version: 1.0
+Date: 2016-09-20
+Author: Alessandro Coppe
+Maintainer: Alessandro Coppe <alexcoppe@gmail.com>
+Description: A bunch of functions used in my bioinformatics analysis.
+License: wtfpl
+RoxygenNote: 5.0.1
