@@ -9,6 +9,11 @@
 ##' @param intervals A numeric vector with coverage intervals
 ##' @param pattern A regular expression pattern. Only file names which match the regular expression will be returned
 ##' @return A ggplot object to be printed
+##' @examples
+##' fpath <- system.file("extdata", "sample2-coverage-hist.txt", package="iSeqsR")
+##' directory <- dirname(fpath)
+##' bam.files.coverage.plot(path = directory, pattern="-coverage-hist.txt$", intervals = c(0,10,20,30,50))
+##'
 ##' @export
 bam.files.coverage.plot <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
   files <- list.files(path = path, pattern=pattern)

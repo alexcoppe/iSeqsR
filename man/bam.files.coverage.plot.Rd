@@ -21,4 +21,10 @@ A ggplot object to be printed
 Plot a barchart of bam files coverage. It needs coverage statistic files generated with the command:
 bedtools coverage -hist -abam sample.bam -b target_regions.bed | grep ^all > sample-coverage-hist.txt
 }
+\examples{
+fpath <- system.file("extdata", "sample2-coverage-hist.txt", package="iSeqsR")
+directory <- dirname(fpath)
+bam.files.coverage.plot(path = directory, pattern="-coverage-hist.txt$", intervals = c(0,10,20,30,50))
+
+}
 
