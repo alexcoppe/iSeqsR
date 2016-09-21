@@ -5,8 +5,8 @@
 ##' @param pattern The pattern to be matched to find coverage statistics file in the current directory
 ##' @export
 plot.bam.files.coverage <-
-function (intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
-  files <- list.files(pattern=pattern)
+function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
+  files <- list.files(path = path, pattern=pattern)
   intervals <- c(intervals, 1000)
   names <- c("coverage", "bases", "exome", "perc")
   patient.t <- c()
@@ -17,11 +17,11 @@ function (intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
   for (i in 1:length(files)){
     f <- files[i]
     #print(f)
-    data <- read.table(f, sep="\t", header=F)
+    data <- read.table(file.path(path, f), sep="\t", header=F)
     cols <- ncol(data)
     data <- data[,2:cols]
     colnames(data) <- names
-    bases.in.interval.of.coverage <- rollapply(intervals, 2, function(x) {
+    bases.in.interval.of.coverage <- zoo::rollapply(intervals, 2, function(x) {
       sum(subset(data, coverage >= x[1] & coverage < x[2])$bases)
     } )
     bases.t <- c(bases.t, bases.in.interval.of.coverage)
@@ -46,14 +46,14 @@ function (intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
   axis.title.size <- 30
   legend.text.size <- 22
   print(d)
-  p <- ggplot(d, aes(patients, fill=coverage)) + geom_bar(aes(weight=bases / exome.length, order=rev(categories.t))) +
-    xlab("Patient") + 
-    ylab("% of targeted bases covered") +
-    theme(axis.title.y = element_text(colour = "#666666") ) +
-    theme(axis.title.x = element_text(colour = "#666666")) +
-    theme(axis.text=element_text(size=axis.text.size), axis.title=element_text(size=axis.title.size, color="#343123")) +
-    theme(legend.text = element_text(colour="#444444", size = legend.text.size, face = "bold")) +
-    scale_x_discrete(labels=labs)
+  p <- ggplot2::ggplot(d, ggplot2::aes(patients, fill=coverage)) + ggplot2::geom_bar(ggplot2::aes(weight=bases / exome.length, order=rev(categories.t))) +
+    ggplot2::xlab("Patient") + 
+    ggplot2::ylab("% of targeted bases covered") +
+    ggplot2::theme(axis.title.y = ggplot2::element_text(colour = "#666666") ) +
+    ggplot2::theme(axis.title.x = ggplot2::element_text(colour = "#666666")) +
+    ggplot2::theme(axis.text=ggplot2::element_text(size=axis.text.size), axis.title=ggplot2::element_text(size=axis.title.size, color="#343123")) +
+    ggplot2::theme(legend.text = ggplot2::element_text(colour="#444444", size = legend.text.size, face = "bold")) +
+    ggplot2::scale_x_discrete(labels=labs)
   
   p
 }
