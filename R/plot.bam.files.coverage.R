@@ -1,11 +1,16 @@
 
-##' Plot histogram of bam files coverage
+##' Plots a barchart of bam files coverage.
 ##' 
+##' Plot a barchart of bam files coverage. It needs coverage statistic files generated with the command:
+##' bedtools coverage -hist -abam sample.bam -b target_regions.bed | grep ^all > sample-coverage-hist.txt
+##' 
+##' 
+##' @param path The path to the directory containing your coverage statistics file
 ##' @param intervals A numeric vector with coverage intervals
-##' @param pattern The pattern to be matched to find coverage statistics file in the current directory
+##' @param pattern A regular expression pattern. Only file names which match the regular expression will be returned
+##' @return A ggplot object to be printed
 ##' @export
-plot.bam.files.coverage <-
-function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
+bam.files.coverage.plot <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
   files <- list.files(path = path, pattern=pattern)
   intervals <- c(intervals, 1000)
   names <- c("coverage", "bases", "exome", "perc")
@@ -16,7 +21,6 @@ function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$"
   i <- 1
   for (i in 1:length(files)){
     f <- files[i]
-    #print(f)
     data <- read.table(file.path(path, f), sep="\t", header=F)
     cols <- ncol(data)
     data <- data[,2:cols]
@@ -45,7 +49,6 @@ function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$"
   axis.text.size <- 26
   axis.title.size <- 30
   legend.text.size <- 22
-  print(d)
   p <- ggplot2::ggplot(d, ggplot2::aes(patients, fill=coverage)) + ggplot2::geom_bar(ggplot2::aes(weight=bases / exome.length, order=rev(categories.t))) +
     ggplot2::xlab("Patient") + 
     ggplot2::ylab("% of targeted bases covered") +
