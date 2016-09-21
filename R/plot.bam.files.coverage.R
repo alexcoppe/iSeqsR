@@ -38,7 +38,7 @@ bam.files.coverage.plot <- function (path=".", intervals=c(0,5,10,20,30, 50), pa
     patients <- rep(patient, length(intervals) - 1)
     exome.length <- data[["exome"]][1]
     patient.t <- c(patient.t, patients)
-    categories <- rollapply(intervals, 2, function(x) {
+    categories <- zoo::rollapply(intervals, 2, function(x) {
       paste(x[1], x[2], sep="-")
     } )
     categories[length(categories)] <- paste(">", intervals[length(intervals) - 1], sep="")
