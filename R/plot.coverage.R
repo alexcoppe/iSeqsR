@@ -12,10 +12,10 @@
 ##' @examples
 ##' fpath <- system.file("extdata", "sample2-coverage-hist.txt", package="iSeqsR")
 ##' directory <- dirname(fpath)
-##' bam.files.coverage.plot(path = directory, pattern="-coverage-hist.txt$", intervals = c(0,10,20,30,50))
+##' coverage.barchart(path = directory, pattern="-coverage-hist.txt$", intervals = c(0,10,20,30,50))
 ##'
 ##' @export
-bam.files.coverage.plot <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
+coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern="-coverage-hist.txt$") {
   files <- list.files(path = path, pattern=pattern)
   intervals <- c(intervals, 1000)
   names <- c("coverage", "bases", "exome", "perc")
@@ -65,3 +65,56 @@ bam.files.coverage.plot <- function (path=".", intervals=c(0,5,10,20,30, 50), pa
   
   p
 }
+
+
+
+##' Plot the cumulative distribution of the fraction of targeted bases covered by n reads
+##' 
+##' Plot the cumulative distribution of the fraction of targeted bases covered by n reads. It needs coverage statistic files generated with the command:
+##' bedtools coverage -hist -abam sample.bam -b target_regions.bed | grep ^all > sample-coverage-hist.txt
+##' It is based on the code from this the post in Getting Things Done in Genetics: http://www.gettinggeneticsdone.com/2014/03/visualize-coverage-exome-targeted-ngs-bedtools.html
+##' 
+##' 
+##' @param path The path to the directory containing your coverage statistics file
+##' @param pattern A regular expression pattern. Only file names which match the regular expression will be returned
+##' @examples
+##' fpath <- system.file("extdata", "sample2-coverage-hist.txt", package="iSeqsR")
+##' directory <- dirname(fpath)
+##' coverage.cumulative.distribution.plot(path = directory, pattern="-coverage-hist.txt$")
+##'
+##' @export
+coverage.cumulative.distribution.plot <- function(path=".", pattern="-coverage-hist.txt$"){
+  files <- list.files(path = path, pattern=pattern)
+  labs <- gsub("-coverage-hist.txt", "", files)
+  cov <- list()
+  cov_cumul <- list()
+  for (i in 1:length(files)) {
+    cov[[i]] <- read.table(file.path(path, files[i]))
+    cov_cumul[[i]] <- 1-cumsum(cov[[i]][,5])
+  }
+  
+
+  palette <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(11,"Paired"))(length(cov))
+  
+  plot(cov[[1]][2:401, 2], cov_cumul[[1]][1:400], type='n', xlab="Depth", ylab="Fraction of capture targeted bases with coverage \u2265 depth", ylim=c(0,1.0), main="Targeted Regions Coverage")
+  abline(v = 10, col = "gray60")
+  abline(v = 20, col = "gray60")
+  abline(v = 30, col = "gray60")
+  abline(v = 40, col = "gray60")
+  abline(v = 50, col = "gray60")
+  abline(v = 100, col = "gray60")
+  abline(h = 0.50, col = "gray60")
+  axis(1, at=c(10,20,30,40,50,100), labels=c(10,20,30,40,50,100))
+  axis(2, at=c(0.90), labels=c(0.90))
+  axis(2, at=c(0.50), labels=c(0.50))
+  
+  for (i in 1:length(cov)) points(cov[[i]][2:401, 2], cov_cumul[[i]][1:400], type='l', lwd=3, col=palette[i])
+  
+  legend("topright", legend=labs, col=palette, lty=1, lwd=4)
+  
+}
+
+
+
+
+
