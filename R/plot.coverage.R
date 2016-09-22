@@ -39,7 +39,7 @@ coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern=
     exome.length <- data[["exome"]][1]
     patient.t <- c(patient.t, patients)
     categories <- zoo::rollapply(intervals, 2, function(x) {
-      paste(x[1], x[2], sep="-")
+      paste(ifelse(x[1] == 0, x[1], x[1] + 1), x[2], sep="-")
     } )
     categories[length(categories)] <- paste(">", intervals[length(intervals) - 1], sep="")
     categories.t <- c(categories.t, categories)
@@ -66,6 +66,8 @@ coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern=
   p
 }
 
+
+coverage.barchart("/home/ale/Code/Projects/github/iSeqsR/inst/extdata")
 
 
 ##' Plot the cumulative distribution of the fraction of targeted bases covered by n reads
