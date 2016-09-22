@@ -85,7 +85,7 @@ coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern=
 ##' @export
 coverage.cumulative.distribution.plot <- function(path=".", pattern="-coverage-hist.txt$"){
   files <- list.files(path = path, pattern=pattern)
-  labs <- gsub("-coverage-hist.txt", "", files)
+  labs <- gsub(pattern, "", files)
   cov <- list()
   cov_cumul <- list()
   for (i in 1:length(files)) {
