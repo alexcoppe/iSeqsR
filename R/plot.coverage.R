@@ -130,6 +130,7 @@ coverage.cumulative.distribution.plot <- function(path=".", pattern="-coverage-h
 ##' samples.mean.coverage(path = directory, pattern="-coverage-hist.txt$")
 ##'
 ##' @export
+##' @import dplyr
 samples.mean.coverage <- function (path=".", pattern="-coverage-hist.txt$") {
   files <- list.files(path = path, pattern=pattern)
   names <- c("coverage", "bases", "exome", "perc")
