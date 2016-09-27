@@ -67,8 +67,6 @@ coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern=
 }
 
 
-coverage.barchart("/home/ale/Code/Projects/github/iSeqsR/inst/extdata")
-
 
 ##' Plot the cumulative distribution of the fraction of targeted bases covered by n reads
 ##' 
