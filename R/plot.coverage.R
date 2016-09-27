@@ -116,5 +116,40 @@ coverage.cumulative.distribution.plot <- function(path=".", pattern="-coverage-h
 
 
 
+##' Calculates mean coverage for all samples in a directory
+##' 
+##' Calculates mean coverage for all samples in a given directory. It needs coverage statistic files generated with the command:
+##' bedtools coverage -hist -abam sample.bam -b target_regions.bed | grep ^all > sample-coverage-hist.txt
+##'
+##' 
+##' @param path The path to the directory containing your coverage statistics file
+##' @param pattern A regular expression pattern. Only file names which match the regular expression will be returned
+##' @examples
+##' fpath <- system.file("extdata", "sample2-coverage-hist.txt", package="iSeqsR")
+##' directory <- dirname(fpath)
+##' samples.mean.coverage(path = directory, pattern="-coverage-hist.txt$")
+##'
+##' @export
+samples.mean.coverage <- function (path=".", pattern="-coverage-hist.txt$") {
+  files <- list.files(path = path, pattern=pattern)
+  names <- c("coverage", "bases", "exome", "perc")
+  
+  all.data <- data.frame(coverage=numeric(0), bases=numeric(0), exome=numeric(0), perc=numeric(0), patient=character(0))
+  for (i in 1:length(files)){
+    f <- files[i]
+    data <- read.table(file.path(path, files[i]), sep="\t", header=F)
+    cols <- ncol(data)
+    data <- data[,2:cols]
+    colnames(data) <- names
+    patient <- gsub(pattern, "", as.character(f))
+    data$patient <- patient
+    exome.length <- data[["exome"]][1]
+    all.data <- rbind(data, all.data)
+  }
+  all.data$mult <- all.data$coverage * all.data$bases
+  all.data
+  patients.mean.coverage <- dplyr::group_by(all.data, patient) %>% dplyr::summarise(  mean.coverage=sum(as.numeric(mult)) / exome[1]   )
+  patients.mean.coverage
+}
 
 

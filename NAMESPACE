@@ -2,3 +2,4 @@
 
 export(coverage.barchart)
 export(coverage.cumulative.distribution.plot)
+export(samples.mean.coverage)
