@@ -62,3 +62,26 @@ summarise.variants.by.impact <- function (variants.table, impacts=c("MODERATE", 
   variants.by.impact
 }
 
+
+##' Summarises genes by the number of patients in which are found mutated
+##' 
+##' Given variants data obtained with read.variants.tsv, returns a data frame with the number of patients in which a gene is found mutated.
+##' 
+##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns.
+##' @return A tbl_df with 2 columns: gene name, number of patients in which the 
+##'
+##' @export
+variants.recurrence.by.gene.name <- function(variants.table) {
+  recurrent.variants <- variants.table %>% dplyr::group_by(gene_name) %>% summarise(in.n.samples=dplyr::n_distinct(Patient))
+  ordered.recurrent.variants <- arrange(recurrent.variants, desc(in.n.samples))
+  ordered.recurrent.variants
+}
+
+
+
+
+
+
+
+
+
