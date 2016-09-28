@@ -2,5 +2,8 @@
 
 export(coverage.barchart)
 export(coverage.cumulative.distribution.plot)
+export(read.variants.tsv)
 export(samples.mean.coverage)
+export(summarise.variants.by.impact)
+export(summarise.variants.by.patient)
 import(dplyr)
