@@ -102,3 +102,42 @@ variants.recurrence.by.gene.name <- function(variants.table) {
 }
 
 
+##' Plots a matirx plot of mutated genes vs patient
+##' 
+##' Given variants data obtained with read.variants.tsv, plots a matrix plot of mutated genes vs patient.
+##' 
+##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with Patient and gene_name columns.
+##' @return A matrix plot with mutated genes vs patient
+##'
+##' @export
+gene.vs.patient.matrix.plot <- function (variants.table) {
+  #Create a data table with 3 columns: gene symbol, sample in which gene is mutated, a column of 1s
+  data.for.heatmap <- dplyr::select(variants.table, gene_name, Patient) %>% dplyr::mutate(Patient=as.character(Patient)) %>% dplyr::mutate(in.sample=1)
+  #data.for.heatmap <- dplyr::select(filtered.data.with.symbols.no.na, symbol, sample, ratio) %>% mutate(sample=as.character(sample))
+  data.for.heatmap <- unique(data.for.heatmap)
+  data.for.heatmap
+  
+  #Create the matrix to be used for plotting the heatmap. Rows are gene symbols, columns are samples
+  heatmap.data <- reshape2::dcast(data.for.heatmap, gene_name ~ Patient)
+  heatmap.data[is.na(heatmap.data)] <- 0
+  heatmap.data <- tbl_df(heatmap.data)
+  
+  heatmap.data$recurrency <- rowSums(heatmap.data[,2:ncol(heatmap.data)])
+  
+  #Select only genes mutated in at least 2 samples
+  recurrent.genes <- dplyr::filter(heatmap.data, recurrency >=2)
+  
+  #Oder rows of data frame by recurrencys
+  recurrent.genes <- arrange(recurrent.genes, desc(recurrency))
+  
+  #Build the matrix for heatmap plotting
+  heatmap.matrix <- as.matrix(recurrent.genes[,2:(ncol(recurrent.genes)-1)])
+  rownames(heatmap.matrix) <- recurrent.genes$gene_name
+  
+  #Build the heatmap plot
+  pheatmap::pheatmap(heatmap.matrix, legend=F, cluster_cols=FALSE, cluster_rows = F, color=colorRampPalette(c("white",  "#6699FF"))(50), 
+                     border_color="#777777", display_numbers = FALSE)
+}
+
+
+

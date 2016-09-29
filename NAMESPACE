@@ -2,6 +2,7 @@
 
 export(coverage.barchart)
 export(coverage.cumulative.distribution.plot)
+export(gene.vs.patient.matrix.plot)
 export(patients.by.number.of.variants.plot)
 export(read.variants.tsv)
 export(samples.mean.coverage)
