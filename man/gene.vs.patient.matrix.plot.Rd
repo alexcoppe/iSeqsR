@@ -5,10 +5,16 @@
 \title{Plots a matirx plot of mutated genes vs patient}
 \usage{
 gene.vs.patient.matrix.plot(variants.table, cluster_cols = F,
-  cluster_rows = F, ...)
+  cluster_rows = F, min.recurrence = 2, ...)
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with Patient and gene_name columns.}
+
+\item{cluster_cols}{boolean value determining if columns should be clustered}
+
+\item{cluster_rows}{boolean value determining if rows should be clustered}
+
+\item{min.recurrence}{minimum number of patients in which should be mutated to be used}
 }
 \value{
 A matrix plot with mutated genes vs patient

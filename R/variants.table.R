@@ -107,10 +107,13 @@ variants.recurrence.by.gene.name <- function(variants.table) {
 ##' Given variants data obtained with read.variants.tsv, plots a matrix plot of mutated genes vs patient.
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with Patient and gene_name columns.
+##' @param cluster_cols boolean value determining if columns should be clustered 
+##' @param cluster_rows boolean value determining if rows should be clustered
+##' @param min.recurrence minimum number of patients in which should be mutated to be used 
 ##' @return A matrix plot with mutated genes vs patient
 ##'
 ##' @export
-gene.vs.patient.matrix.plot <- function (variants.table,  cluster_cols = F,  cluster_rows = F, ...) {
+gene.vs.patient.matrix.plot <- function (variants.table,  cluster_cols = F,  cluster_rows = F, min.recurrence = 2, ...) {
   #Create a data table with 3 columns: gene symbol, sample in which gene is mutated, a column of 1s
   data.for.heatmap <- dplyr::select(variants.table, gene_name, Patient) %>% dplyr::mutate(Patient=as.character(Patient)) %>% dplyr::mutate(in.sample=1)
   #data.for.heatmap <- dplyr::select(filtered.data.with.symbols.no.na, symbol, sample, ratio) %>% mutate(sample=as.character(sample))
@@ -125,7 +128,7 @@ gene.vs.patient.matrix.plot <- function (variants.table,  cluster_cols = F,  clu
   heatmap.data$recurrency <- rowSums(heatmap.data[,2:ncol(heatmap.data)])
   
   #Select only genes mutated in at least 2 samples
-  recurrent.genes <- dplyr::filter(heatmap.data, recurrency >=2)
+  recurrent.genes <- dplyr::filter(heatmap.data, recurrency >= min.recurrence)
   
   #Oder rows of data frame by recurrencys
   recurrent.genes <- arrange(recurrent.genes, desc(recurrency))
