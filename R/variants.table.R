@@ -151,9 +151,7 @@ gene.vs.patient.matrix.plot <- function (variants.table,  cluster_cols = F,  clu
 ##' @param t1 a variants table obtained by read.variants.tsv
 ##' @param t2 a variants table obtained by read.variants.tsv
 ##' @return a data frame with variants from both t1 and t2. If a variant is present in both tables it keeps column for the first table.
-##'
-##' @export
-merge.2.variant.tables <- function (t1,t2) {
+merge2.variant.tables <- function (t1,t2) {
   t1 <- mutect.table %>% unique()
   t2 <- mutect2.table %>% unique()
   i <- intersect(t1$key, t2$key)
@@ -176,8 +174,8 @@ merge.2.variant.tables <- function (t1,t2) {
 ##' @return a data frame with variants obtained by merging all variant tables in the variants.list parameter; uses chrosome, position, alternative allele and reference allele as key.
 ##'
 ##' @export
-merge.variant.tables <- function(variants.list) {
-  all.variants <- Reduce(merge.2.variant.tables, variants.list)
+variant.tables.merge <- function(variants.list) {
+  all.variants <- Reduce(merge2.variant.tables, variants.list)
   all.variants
 }
 
