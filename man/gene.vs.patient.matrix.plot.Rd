@@ -4,7 +4,8 @@
 \alias{gene.vs.patient.matrix.plot}
 \title{Plots a matirx plot of mutated genes vs patient}
 \usage{
-gene.vs.patient.matrix.plot(variants.table)
+gene.vs.patient.matrix.plot(variants.table, cluster_cols = F,
+  cluster_rows = F, ...)
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with Patient and gene_name columns.}

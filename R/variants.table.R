@@ -110,7 +110,7 @@ variants.recurrence.by.gene.name <- function(variants.table) {
 ##' @return A matrix plot with mutated genes vs patient
 ##'
 ##' @export
-gene.vs.patient.matrix.plot <- function (variants.table) {
+gene.vs.patient.matrix.plot <- function (variants.table,  cluster_cols = F,  cluster_rows = F, ...) {
   #Create a data table with 3 columns: gene symbol, sample in which gene is mutated, a column of 1s
   data.for.heatmap <- dplyr::select(variants.table, gene_name, Patient) %>% dplyr::mutate(Patient=as.character(Patient)) %>% dplyr::mutate(in.sample=1)
   #data.for.heatmap <- dplyr::select(filtered.data.with.symbols.no.na, symbol, sample, ratio) %>% mutate(sample=as.character(sample))
@@ -135,8 +135,8 @@ gene.vs.patient.matrix.plot <- function (variants.table) {
   rownames(heatmap.matrix) <- recurrent.genes$gene_name
   
   #Build the heatmap plot
-  pheatmap::pheatmap(heatmap.matrix, legend=F, cluster_cols=FALSE, cluster_rows = F, color=colorRampPalette(c("white",  "#6699FF"))(50), 
-                     border_color="#777777", display_numbers = FALSE)
+  pheatmap::pheatmap(heatmap.matrix, legend=F, cluster_cols= cluster_cols, cluster_rows =  cluster_rows, color=colorRampPalette(c("white",  "#6699FF"))(50), 
+                     border_color="#777777", display_numbers = FALSE, ...)
 }
 
 
