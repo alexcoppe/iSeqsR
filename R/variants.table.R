@@ -177,7 +177,7 @@ merge.2.variant.tables <- function (t1,t2) {
 ##'
 ##' @export
 merge.variant.tables <- function(variants.list) {
-  all.variants <- Reduce(merge.variant.tables, variants.list)
+  all.variants <- Reduce(merge.2.variant.tables, variants.list)
   all.variants
 }
 
