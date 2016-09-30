@@ -143,4 +143,41 @@ gene.vs.patient.matrix.plot <- function (variants.table,  cluster_cols = F,  clu
 }
 
 
+##' Merges two variants.tables.
+##' 
+##' Merges two variants tables obtained from read.variants.tsv function. It uses chromosome, genomic position, reference, alternative allele as a key.
+##' In the case of a variant present in both tables it uses columns for the first table.
+##' 
+##' @param t1 a variants table obtained by read.variants.tsv
+##' @param t2 a variants table obtained by read.variants.tsv
+##' @return a data frame with variants from both t1 and t2. If a variant is present in both tables it keeps column for the first table.
+##'
+##' @export
+merge.2.variant.tables <- function (t1,t2) {
+  t1 <- mutect.table %>% unique()
+  t2 <- mutect2.table %>% unique()
+  i <- intersect(t1$key, t2$key)
+  t1.diff <- setdiff(t1$key,i)
+  t2.diff <- setdiff(t2$key,i)
+  
+  common.variants <-  t1 %>% dplyr::filter(key %in% i)
+  t2.variants <-  t2 %>% dplyr::filter(key %in% t2.diff)
+  t1.variants <- t1 %>% dplyr::filter(key %in% t1.diff)
+  merged <- rbind(common.variants, t2.variants, t1.variants)
+  merged
+}
+
+##' Merges variants.tables.
+##' 
+##' Merges variants tables obtained from read.variants.tsv function. It uses chromosome, genomic position, reference, alternative allele as a key.
+##' In the case of a variant present in both tables it uses columns for the first table.
+##' 
+##' @param variants.list a  list of variants table obtained by read.variants.tsv
+##' @return a data frame with variants obtained by merging all variant tables in the variants.list parameter; uses chrosome, position, alternative allele and reference allele as key.
+##'
+##' @export
+merge.variant.tables <- function(variants.list) {
+  all.variants <- Reduce(merge.variant.tables, variants.list)
+  all.variants
+}
 
