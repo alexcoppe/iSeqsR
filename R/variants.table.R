@@ -181,6 +181,23 @@ variant.tables.merge <- function(variants.list) {
 
 
 
+
+build.co.mut.data <- function (all.variants, min.occurence=2) {
+  co.mut.data <- all.variants %>% dplyr::select(gene_name, Patient, impact)
+  fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(impact), collapse = " & ") )
+  co.mut.data.with.fill.col <- merge(co.mut.data, fill, by = c("gene_name", "Patient"))
+  
+  coocurrent.genes <- co.mut.data %>% dplyr::group_by(gene_name) %>% dplyr::summarise(n = dplyr::n_distinct(Patient)) %>% dplyr::filter(n >= min.occurence)
+  
+  filtered.co.mut.data <- merge(co.mut.data.with.fill.col, coocurrent.genes, by="gene_name") %>% dplyr::arrange(n) %>% unique()
+  
+  sorted.genes <- dplyr::arrange(filtered.co.mut.data, n)$gene_name %>% unique
+  filtered.co.mut.data$gene_name <- factor(filtered.co.mut.data$gene_name, levels = sorted.genes)
+  filtered.co.mut.data
+}
+
+
+
 ##' Produces a very basic coMut plot.
 ##' 
 ##' Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
@@ -190,17 +207,11 @@ variant.tables.merge <- function(variants.list) {
 ##' @return A ggplot
 ##'
 ##' @export
-coMut.plot <- function(all.variants, min.occurence=2, legend.position="right") {
-  
+coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="right") {
+
+  data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
+    
   legend <- ifelse(legend.position=="none", "none", legend.position)
-  
-  co.mut.data <- all.variants %>% dplyr::select(gene_name, Patient, impact)
-  fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(impact), collapse = " & ") )
-  co.mut.data.with.fill.col <- merge(co.mut.data, fill, by = c("gene_name", "Patient"))
-  
-  coocurrent.genes <- co.mut.data %>% dplyr::group_by(gene_name) %>% dplyr::summarise(n = dplyr::n_distinct(Patient)) %>% dplyr::filter(n >= min.occurence)
-  
-  filtered.co.mut.data <- merge(co.mut.data.with.fill.col, coocurrent.genes, by="gene_name") %>% dplyr::arrange(n) %>% unique()
   
   theme.for.plot <- ggplot2::theme(
     axis.ticks=ggplot2::element_blank(),
@@ -212,15 +223,62 @@ coMut.plot <- function(all.variants, min.occurence=2, legend.position="right") {
     axis.title.y=ggplot2::element_blank(),
     legend.position = legend
   )
-  
-  
-  sorted.genes <- dplyr::arrange(filtered.co.mut.data, n)$gene_name %>% unique
-  filtered.co.mut.data$gene_name <- factor(filtered.co.mut.data$gene_name, levels = sorted.genes)
-  
-  ggplot2::ggplot(filtered.co.mut.data, ggplot2::aes(x = Patient, y = gene_name,  fill=factor(fill))) +
+
+  ggplot2::ggplot(data, ggplot2::aes(x = Patient, y = gene_name,  fill=factor(fill))) +
     ggplot2::geom_tile(colour = "grey50") + theme.for.plot +
     ggplot2::scale_fill_discrete(name="Mutation Type")
 }
+
+
+##' Produces a very basic coMut plot.
+##' 
+##' Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
+##' The plot shows mutation type at gene level. It also shows if a gene in a sample is hit by mutation with different types.
+##' 
+##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns
+##' @return A ggplot
+##'
+##' @export
+coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position="right") {
+  
+  data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
+  
+  t <- ggplot2::theme(axis.line=ggplot2::element_blank(),
+                      axis.text.y=ggplot2::element_blank(),
+                      axis.ticks.y=ggplot2::element_blank(),
+                      axis.title.x=ggplot2::element_blank(),
+                      axis.title.y=ggplot2::element_blank(),
+                      legend.position="right",
+                      panel.background=ggplot2::element_blank(),
+                      panel.border=ggplot2::element_blank(),
+                      panel.grid.major=ggplot2::element_blank(),
+                      panel.grid.minor=ggplot2::element_blank(),
+                      plot.background=ggplot2::element_blank()
+  )
+  
+  p2 <- ggplot2::ggplot(data, ggplot2::aes(gene_name, fill=fill)) + ggplot2::geom_bar() + ggplot2::coord_flip() +  t + ggplot2::scale_fill_discrete(name="Mutation Type")
+  p2
+}
+
+
+##' Produces a coMut plot.
+##' 
+##' Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
+##' The plot shows mutation type at gene level and on the right a bar chart with the number of patients in which a gene is mutated.
+##' It also shows if a gene in a sample is hit by mutation with different types.
+##' 
+##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns
+##' @return A ggplot
+##'
+##' @export
+coMut.plot <- function(all.variants, min.occurence=2) {
+  p1 <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence)
+  p2 <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence)
+  p <- plot_grid(p1, p2, align = 'h', rel_widths = c(1, 0.15))
+  p
+}
+
+
 
 
 
