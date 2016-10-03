@@ -230,15 +230,8 @@ coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="righ
 }
 
 
-##' Produces a very basic coMut plot.
+##' ##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.
 ##' 
-##' Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
-##' The plot shows mutation type at gene level. It also shows if a gene in a sample is hit by mutation with different types.
-##' 
-##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns
-##' @return A ggplot
-##'
-##' @export
 coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position="right") {
   
   data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
@@ -264,7 +257,7 @@ coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position=
 ##' Produces a coMut plot.
 ##' 
 ##' Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
-##' The plot shows mutation type at gene level and on the right a bar chart with the number of patients in which a gene is mutated.
+##' The plot shows mutation type at gene level and on the right a bar chart with the number of patients in which a gene is.
 ##' It also shows if a gene in a sample is hit by mutation with different types.
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns

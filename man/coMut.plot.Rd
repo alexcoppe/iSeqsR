@@ -14,7 +14,7 @@ A ggplot
 }
 \description{
 Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
-The plot shows mutation type at gene level and on the right a bar chart with the number of patients in which a gene is mutated.
+The plot shows mutation type at gene level and on the right a bar chart with the number of patients in which a gene is.
 It also shows if a gene in a sample is hit by mutation with different types.
 }
 

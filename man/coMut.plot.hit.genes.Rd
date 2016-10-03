@@ -2,19 +2,12 @@
 % Please edit documentation in R/variants.table.R
 \name{coMut.plot.hit.genes}
 \alias{coMut.plot.hit.genes}
-\title{Produces a very basic coMut plot.}
+\title{##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.}
 \usage{
 coMut.plot.hit.genes(all.variants, min.occurence = 2,
   legend.position = "right")
 }
-\arguments{
-\item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns}
-}
-\value{
-A ggplot
-}
 \description{
-Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
-The plot shows mutation type at gene level. It also shows if a gene in a sample is hit by mutation with different types.
+##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.
 }
 
