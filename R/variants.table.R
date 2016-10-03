@@ -215,17 +215,17 @@ coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="righ
   
   theme.for.plot <- ggplot2::theme(
     axis.ticks=ggplot2::element_blank(),
-    panel.grid.minor=ggplot2::element_blank(),
     panel.grid.major=ggplot2::element_blank(),
     panel.background=ggplot2::element_rect(fill='#EEEEEE',colour='#EEEEEE'),
     axis.text.x=ggplot2::element_text(angle=45, hjust=1),
     axis.title.x=ggplot2::element_blank(),
     axis.title.y=ggplot2::element_blank(),
+    axis.text.y=ggplot2::element_text(face = "italic"),
     legend.position = legend
   )
 
   ggplot2::ggplot(data, ggplot2::aes(x = Patient, y = gene_name,  fill=factor(fill))) +
-    ggplot2::geom_tile(colour = "grey50") + theme.for.plot +
+    ggplot2::geom_tile(colour = "#EEEEEE") + theme.for.plot +
     ggplot2::scale_fill_discrete(name="Mutation Type")
 }
 
@@ -253,6 +253,32 @@ coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position=
   p2
 }
 
+##' ##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.
+##' 
+coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
+  
+  data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
+  
+  t <- ggplot2::theme(axis.line=ggplot2::element_blank(),
+                      axis.text.x=ggplot2::element_blank(),
+                      axis.ticks.x=ggplot2::element_blank(),
+                      axis.title.y=ggplot2::element_blank(),
+                      axis.title.x=ggplot2::element_blank(),
+                      legend.position="none",
+                      panel.background=ggplot2::element_blank(),
+                      panel.border=ggplot2::element_blank(),
+                      panel.grid.major=ggplot2::element_blank(),
+                      panel.grid.minor=ggplot2::element_blank(),
+                      plot.background=ggplot2::element_blank()
+  )
+  
+  #p <- ggplot2::ggplot(filtered.co.mut.data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() + t + 
+   #     ggplot2::scale_fill_discrete(name="Mutation Type")
+  
+  p <- ggplot2::ggplot(data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() +  t + ggplot2::scale_fill_discrete(name="Mutation Type")
+  p
+}
+
 
 ##' Produces a coMut plot.
 ##' 
@@ -265,10 +291,29 @@ coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position=
 ##'
 ##' @export
 coMut.plot <- function(all.variants, min.occurence=2) {
-  p1 <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence)
-  p2 <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence)
-  p <- cowplot::plot_grid(p1, p2, align = 'h', rel_widths = c(1, 0.15))
-  p
+  upper.plot <- iSeqsR::coMut.plot.mutations.in.sample(all.variants, min.occurence = min.occurence)
+  main.plot <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence)
+  right.plot <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence)
+
+  g.main <- ggplot2::ggplotGrob(main.plot)
+  g.right <- ggplot2::ggplotGrob(right.plot)
+  g.upper <- ggplot2::ggplotGrob(upper.plot)
+  
+  maxwidth = grid::unit.pmax(g.upper$widths[1:3],
+                             g.main$widths[1:3])
+  
+  g.upper$widths[1:3] <- maxwidth
+  g.main$widths[1:3] <- maxwidth
+  
+  maxheight <- grid::unit.pmax(g.main$heights[1:5],
+                               g.right$heights[1:5])
+  
+  g.main$heights[1:5] <- maxheight
+  g.right$heights[1:5] <- maxheight
+  
+  blankPanel <- grid::grid.rect(gp=grid::gpar(col="white"))
+  
+  grid.arrange(g.upper, blankPanel, g.main, g.right, ncol=2, heights=c(1,5), widths=c(2,1))
 }
 
 
