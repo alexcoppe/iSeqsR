@@ -190,7 +190,9 @@ variant.tables.merge <- function(variants.list) {
 ##' @return A ggplot
 ##'
 ##' @export
-coMut.plot <- function(all.variants, min.occurence=2) {
+coMut.plot <- function(all.variants, min.occurence=2, legend.position="right") {
+  
+  legend <- ifelse(legend.position=="none", "none", legend.position)
   
   co.mut.data <- all.variants %>% dplyr::select(gene_name, Patient, impact)
   fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(impact), collapse = " & ") )
@@ -205,7 +207,10 @@ coMut.plot <- function(all.variants, min.occurence=2) {
     panel.grid.minor=ggplot2::element_blank(),
     panel.grid.major=ggplot2::element_blank(),
     panel.background=ggplot2::element_rect(fill='#EEEEEE',colour='#EEEEEE'),
-    axis.text.x=ggplot2::element_text(angle=45, hjust=1)
+    axis.text.x=ggplot2::element_text(angle=45, hjust=1),
+    axis.title.x=ggplot2::element_blank(),
+    axis.title.y=ggplot2::element_blank(),
+    legend.position = legend
   )
   
   
