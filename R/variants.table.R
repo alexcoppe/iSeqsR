@@ -267,7 +267,7 @@ coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position=
 coMut.plot <- function(all.variants, min.occurence=2) {
   p1 <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence)
   p2 <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence)
-  p <- plot_grid(p1, p2, align = 'h', rel_widths = c(1, 0.15))
+  p <- cowplot::plot_grid(p1, p2, align = 'h', rel_widths = c(1, 0.15))
   p
 }
 
