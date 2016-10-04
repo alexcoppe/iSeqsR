@@ -182,9 +182,17 @@ variant.tables.merge <- function(variants.list) {
 
 
 
-build.co.mut.data <- function (all.variants, min.occurence=2) {
-  co.mut.data <- all.variants %>% dplyr::select(gene_name, Patient, impact)
-  fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(impact), collapse = " & ") )
+build.co.mut.data <- function (all.variants, min.occurence=2, feature="impact") {
+  columns.to.select <- c("gene_name", "Patient", feature)
+  i <- match(columns.to.select, names(all.variants))
+  co.mut.data <- all.variants %>% dplyr::select(i)
+  
+  if (feature == "impact" | (feature != "impact" & feature != "annotation")) {
+    fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(impact), collapse = " & ") )
+  }
+  if (feature == "annotation") {
+    fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(annotation), collapse = " & ") )
+  }
   co.mut.data.with.fill.col <- merge(co.mut.data, fill, by = c("gene_name", "Patient")) %>% dplyr::select(gene_name, Patient, fill) %>% unique()
   
   coocurrent.genes <- co.mut.data %>% dplyr::group_by(gene_name) %>% dplyr::summarise(n = dplyr::n_distinct(Patient)) %>% dplyr::filter(n >= min.occurence)
@@ -217,6 +225,11 @@ build.co.mut.data <- function (all.variants, min.occurence=2) {
 }
 
 
+chroma <- c(60)
+luminance <- c(70)
+hue <- c(360,0)
+
+
 ##' Produces a very basic coMut plot.
 ##' 
 ##' Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
@@ -228,9 +241,9 @@ build.co.mut.data <- function (all.variants, min.occurence=2) {
 ##' @return A ggplot
 ##'
 ##' @export
-coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="right") {
+coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="right", feature="impact") {
 
-  data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
+  data <- build.co.mut.data(all.variants, min.occurence = min.occurence, feature=feature)
     
   legend <- ifelse(legend.position=="none", "none", legend.position)
   
@@ -247,15 +260,15 @@ coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="righ
 
   ggplot2::ggplot(data, ggplot2::aes(x = Patient, y = gene_name,  fill=factor(fill))) +
     ggplot2::geom_tile(colour = "#EEEEEE") + theme.for.plot +
-    ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent")
+    ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent",  h = hue, l=luminance, c=chroma )
 }
 
 
 ##' ##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.
 ##' 
-coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position="right") {
+coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position="right", feature="impact") {
   
-  data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
+  data <- build.co.mut.data(all.variants, min.occurence = min.occurence, feature = feature)
   
   t <- ggplot2::theme(axis.line=ggplot2::element_blank(),
                       axis.text.y=ggplot2::element_blank(),
@@ -270,15 +283,16 @@ coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position=
                       plot.background=ggplot2::element_blank()
   )
   
-  p2 <- ggplot2::ggplot(data, ggplot2::aes(gene_name, fill=fill)) + ggplot2::geom_bar() + ggplot2::coord_flip() +  t + ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent")
+  p2 <- ggplot2::ggplot(data, ggplot2::aes(gene_name, fill=fill)) + ggplot2::geom_bar() + ggplot2::coord_flip() +  t + 
+      ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent", h = hue, l=luminance, c=chroma)
   p2
 }
 
 ##' ##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.
 ##' 
-coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
+coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2, feature="impact") {
   
-  data <- build.co.mut.data(all.variants, min.occurence = min.occurence)
+  data <- build.co.mut.data(all.variants, min.occurence = min.occurence, feature = feature)
   
   t <- ggplot2::theme(axis.line=ggplot2::element_blank(),
                       axis.text.x=ggplot2::element_blank(),
@@ -296,7 +310,8 @@ coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
   #p <- ggplot2::ggplot(filtered.co.mut.data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() + t + 
    #     ggplot2::scale_fill_discrete(name="Mutation Type")
   
-  p <- ggplot2::ggplot(data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() +  t + ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent")
+  p <- ggplot2::ggplot(data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() +  t + 
+    ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent",  h = hue, l= luminance, c=chroma)
   p
 }
 
@@ -312,10 +327,10 @@ coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
 ##' @return A ggplot
 ##'
 ##' @export
-coMut.plot <- function(all.variants, min.occurence=2) {
-  upper.plot <- coMut.plot.mutations.in.sample(all.variants, min.occurence = min.occurence)
-  main.plot <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence)
-  right.plot <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence)
+coMut.plot <- function(all.variants, min.occurence=2, feature="impact") {
+  upper.plot <- coMut.plot.mutations.in.sample(all.variants, min.occurence = min.occurence, feature = feature)
+  main.plot <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence, feature = feature)
+  right.plot <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence,  feature = feature)
 
   g.main <- ggplot2::ggplotGrob(main.plot)
   g.right <- ggplot2::ggplotGrob(right.plot)
