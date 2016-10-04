@@ -204,6 +204,8 @@ build.co.mut.data <- function (all.variants, min.occurence=2) {
 ##' The plot shows mutation type at gene level. It also shows if a gene in a sample is hit by mutation with different types.
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns
+##' @param min.occurence Minimun number of patient in which the gene should be mutated to be included in the plot
+##' @param legend.position The position where to draw the legend, "none" for no legend
 ##' @return A ggplot
 ##'
 ##' @export
@@ -287,6 +289,7 @@ coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
 ##' It also shows if a gene in a sample is hit by mutation with different types.
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns
+##' @param min.occurence Minimun number of patient in which the gene should be mutated to be included in the plot
 ##' @return A ggplot
 ##'
 ##' @export

@@ -7,6 +7,10 @@
 coMut.plot.main(all.variants, min.occurence = 2, legend.position = "right")
 }
 \arguments{
+\item{min.occurence}{Minimun number of patient in which the gene should be mutated to be included in the plot}
+
+\item{legend.position}{The position where to draw the legend, "none" for no legend}
+
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and gene_name columns}
 }
 \value{
