@@ -185,13 +185,15 @@ variant.tables.merge <- function(variants.list) {
 build.co.mut.data <- function (all.variants, min.occurence=2) {
   co.mut.data <- all.variants %>% dplyr::select(gene_name, Patient, impact)
   fill <- co.mut.data %>% dplyr::group_by(gene_name,Patient) %>% dplyr::summarise(fill = paste(unique(impact), collapse = " & ") )
-  co.mut.data.with.fill.col <- merge(co.mut.data, fill, by = c("gene_name", "Patient"))
+  co.mut.data.with.fill.col <- merge(co.mut.data, fill, by = c("gene_name", "Patient")) %>% dplyr::select(gene_name, Patient, fill) %>% unique()
   
   coocurrent.genes <- co.mut.data %>% dplyr::group_by(gene_name) %>% dplyr::summarise(n = dplyr::n_distinct(Patient)) %>% dplyr::filter(n >= min.occurence)
   filtered.co.mut.data <- merge(co.mut.data.with.fill.col, coocurrent.genes, by="gene_name") %>% dplyr::arrange(n) %>% unique()
+  
   sorted.genes <- dplyr::arrange(filtered.co.mut.data, n)$gene_name %>% unique
   filtered.co.mut.data$gene_name <- factor(filtered.co.mut.data$gene_name, levels = sorted.genes)
 
+  #The following block of code is needed by cases in which there are patients with no mutation
   all.patients <- all.variants$Patient %>% unique()
   patients.with.mutations <- filtered.co.mut.data$Patient %>% unique()
   patients.without.mutations <- setdiff(all.patients, patients.with.mutations)
