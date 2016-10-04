@@ -188,14 +188,31 @@ build.co.mut.data <- function (all.variants, min.occurence=2) {
   co.mut.data.with.fill.col <- merge(co.mut.data, fill, by = c("gene_name", "Patient"))
   
   coocurrent.genes <- co.mut.data %>% dplyr::group_by(gene_name) %>% dplyr::summarise(n = dplyr::n_distinct(Patient)) %>% dplyr::filter(n >= min.occurence)
-  
   filtered.co.mut.data <- merge(co.mut.data.with.fill.col, coocurrent.genes, by="gene_name") %>% dplyr::arrange(n) %>% unique()
-  
   sorted.genes <- dplyr::arrange(filtered.co.mut.data, n)$gene_name %>% unique
   filtered.co.mut.data$gene_name <- factor(filtered.co.mut.data$gene_name, levels = sorted.genes)
-  filtered.co.mut.data
-}
 
+  all.patients <- all.variants$Patient %>% unique()
+  patients.with.mutations <- filtered.co.mut.data$Patient %>% unique()
+  patients.without.mutations <- setdiff(all.patients, patients.with.mutations)
+  if (length(patients.without.mutations) != 0)  {
+    mutated.genes <- filtered.co.mut.data$gene_name %>% unique()
+    not.present.gene.patient.pairs <- expand.grid(patients.without.mutations, mutated.genes)
+    colnames(not.present.gene.patient.pairs) <- c("Patient", "gene_name")
+    not.present.gene.patient.pairs$impact <- "NA"
+    not.present.gene.patient.pairs$fill <- "NA"
+    
+    i <- match(not.present.gene.patient.pairs$gene_name, filtered.co.mut.data$gene_name)
+    n <- filtered.co.mut.data$n[i]
+    not.present.gene.patient.pairs$n <- n
+    
+    all.data <- rbind(filtered.co.mut.data, not.present.gene.patient.pairs)
+    all.data[ all.data == "NA" ] <- NA
+    all.data
+  } else {
+    filtered.co.mut.data
+  }
+}
 
 
 ##' Produces a very basic coMut plot.
@@ -228,7 +245,7 @@ coMut.plot.main <- function(all.variants, min.occurence=2, legend.position="righ
 
   ggplot2::ggplot(data, ggplot2::aes(x = Patient, y = gene_name,  fill=factor(fill))) +
     ggplot2::geom_tile(colour = "#EEEEEE") + theme.for.plot +
-    ggplot2::scale_fill_discrete(name="Mutation Type")
+    ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent")
 }
 
 
@@ -251,7 +268,7 @@ coMut.plot.hit.genes <- function(all.variants, min.occurence=2, legend.position=
                       plot.background=ggplot2::element_blank()
   )
   
-  p2 <- ggplot2::ggplot(data, ggplot2::aes(gene_name, fill=fill)) + ggplot2::geom_bar() + ggplot2::coord_flip() +  t + ggplot2::scale_fill_discrete(name="Mutation Type")
+  p2 <- ggplot2::ggplot(data, ggplot2::aes(gene_name, fill=fill)) + ggplot2::geom_bar() + ggplot2::coord_flip() +  t + ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent")
   p2
 }
 
@@ -277,7 +294,7 @@ coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
   #p <- ggplot2::ggplot(filtered.co.mut.data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() + t + 
    #     ggplot2::scale_fill_discrete(name="Mutation Type")
   
-  p <- ggplot2::ggplot(data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() +  t + ggplot2::scale_fill_discrete(name="Mutation Type")
+  p <- ggplot2::ggplot(data, ggplot2::aes(Patient, fill=fill)) + ggplot2::geom_bar() +  t + ggplot2::scale_fill_discrete(name="Mutation Type", na.value="transparent")
   p
 }
 
@@ -316,7 +333,7 @@ coMut.plot <- function(all.variants, min.occurence=2) {
   
   blankPanel <- grid::grid.rect(gp=grid::gpar(col="white"))
   
-  grid.arrange(g.upper, blankPanel, g.main, g.right, ncol=2, heights=c(1,5), widths=c(2,1))
+  gridExtra::grid.arrange(g.upper, blankPanel, g.main, g.right, ncol=2, heights=c(1,5), widths=c(2,1))
 }
 
 
