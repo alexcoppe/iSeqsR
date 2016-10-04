@@ -294,7 +294,7 @@ coMut.plot.mutations.in.sample <- function(all.variants, min.occurence=2) {
 ##'
 ##' @export
 coMut.plot <- function(all.variants, min.occurence=2) {
-  upper.plot <- iSeqsR::coMut.plot.mutations.in.sample(all.variants, min.occurence = min.occurence)
+  upper.plot <- coMut.plot.mutations.in.sample(all.variants, min.occurence = min.occurence)
   main.plot <- coMut.plot.main(all.variants, legend.position = "none", min.occurence = min.occurence)
   right.plot <- coMut.plot.hit.genes(all.variants, min.occurence = min.occurence)
 
