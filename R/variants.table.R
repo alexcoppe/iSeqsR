@@ -48,21 +48,50 @@ summarise.variants.by.patient <- function (variants.table) {
 ##' 
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and key columns. Key column should be a column with the following string: chr,pos,alt,ref
+##' @param color.by column from variants.table data frame to be used to color the bars
 ##' @return A barchart with the number of variants in each patient.
 ##'
 ##' @export
-patients.by.number.of.variants.plot <- function (variants.table) {
+patients.by.number.of.variants.plot <- function (variants.table, color.by="") {
   variants.by.patient <- summarise.variants.by.patient(variants.table)
-  patients.by.number.of.variants.plot <- sorted.by.mutations <- variants.by.patient %>% dplyr::arrange(desc(number.of.variants))
+  
+  if (color.by != "") {
+    annotation.data.frame <- variants.table[,c("Patient", color.by)] %>% unique()
+    colnames(annotation.data.frame) <- c("Patient", "fill")
+    variants.by.annotated.patient <- dplyr::left_join(variants.by.patient, annotation.data.frame, by="Patient")
+    sorted.by.mutations <- variants.by.annotated.patient %>% dplyr::arrange(desc(number.of.variants))
+    legend <- "right"
+  }
+  else {
+    sorted.by.mutations <- variants.by.patient %>% dplyr::arrange(desc(number.of.variants))
+    legend <- ""
+    fill = c("A")
+  }
+
   sorted.by.mutations$Patient <- factor(sorted.by.mutations$Patient, levels = sorted.by.mutations$Patient)
-  condition <- c("a")
-  ggplot2::ggplot(data=sorted.by.mutations, ggplot2::aes(x=Patient, y=number.of.variants, fill=condition)) + ggplot2::geom_bar(stat="identity") +
-    ggplot2::theme(axis.title.x = ggplot2::element_text(face="bold", colour="#333333", size=18)) +
-    ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, size=13,color="#333333")) +
+  
+  theme.for.plot <- ggplot2::theme(
+    axis.title.x = ggplot2::element_text(face="bold", colour="#333333", size=18),
+    axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, size=13,color="#333333"),
+    legend.position=legend
+    #legend.title=ggplot2::element_blank()
+  )
+  
+  if (color.by == "" ) {
+    scale.fill <-  ggplot2::scale_fill_discrete(name="")
+  }
+  else if (class(sorted.by.mutations[,"fill"]) == "numeric") {
+    scale.fill <- ggplot2::scale_fill_gradient(name=color.by)
+  }
+  else {
+    scale.fill <-  ggplot2::scale_fill_discrete(name=color.by)
+  }
+  
+  ggplot2::ggplot(data=sorted.by.mutations, ggplot2::aes(x=Patient, y=number.of.variants, fill=fill)) + ggplot2::geom_bar(stat="identity") +
+    theme.for.plot +
+    scale.fill +
     ggplot2::ylab("Number of variants") + ggplot2::xlab("Patient")
 }
-
-
 
 
 ##' Summarises the number of variants by impact

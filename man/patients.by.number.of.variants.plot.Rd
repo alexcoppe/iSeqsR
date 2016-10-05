@@ -4,10 +4,12 @@
 \alias{patients.by.number.of.variants.plot}
 \title{Plots a barchart of number of variants per patient}
 \usage{
-patients.by.number.of.variants.plot(variants.table)
+patients.by.number.of.variants.plot(variants.table, color.by = "")
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and key columns. Key column should be a column with the following string: chr,pos,alt,ref}
+
+\item{color.by}{column from variants.table data frame to be used to color the bars}
 }
 \value{
 A barchart with the number of variants in each patient.
