@@ -5,7 +5,7 @@
 \title{##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.}
 \usage{
 coMut.plot.hit.genes(all.variants, min.occurence = 2,
-  legend.position = "right")
+  legend.position = "right", feature = "impact")
 }
 \description{
 ##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.

@@ -4,7 +4,7 @@
 \alias{coMut.plot}
 \title{Produces a coMut plot.}
 \usage{
-coMut.plot(all.variants, min.occurence = 2)
+coMut.plot(all.variants, min.occurence = 2, feature = "impact")
 }
 \arguments{
 \item{min.occurence}{Minimun number of patient in which the gene should be mutated to be included in the plot}

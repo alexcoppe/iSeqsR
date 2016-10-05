@@ -209,7 +209,7 @@ build.co.mut.data <- function (all.variants, min.occurence=2, feature="impact") 
     mutated.genes <- filtered.co.mut.data$gene_name %>% unique()
     not.present.gene.patient.pairs <- expand.grid(patients.without.mutations, mutated.genes)
     colnames(not.present.gene.patient.pairs) <- c("Patient", "gene_name")
-    not.present.gene.patient.pairs$impact <- "NA"
+    #not.present.gene.patient.pairs$impact <- "NA"
     not.present.gene.patient.pairs$fill <- "NA"
     
     i <- match(not.present.gene.patient.pairs$gene_name, filtered.co.mut.data$gene_name)

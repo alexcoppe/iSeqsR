@@ -4,7 +4,8 @@
 \alias{coMut.plot.mutations.in.sample}
 \title{##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.}
 \usage{
-coMut.plot.mutations.in.sample(all.variants, min.occurence = 2)
+coMut.plot.mutations.in.sample(all.variants, min.occurence = 2,
+  feature = "impact")
 }
 \description{
 ##' Produces the right plot in a coMut plot: a barchart with the number of patients in which a gene.
