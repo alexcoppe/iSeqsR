@@ -50,18 +50,25 @@ coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern=
   
   d <- data.frame(patients=patient.t, bases=bases.t, coverage=categories.t)
   
-  labs <- gsub("-coverage-hist.txt", "", files)
-  axis.text.size <- 26
-  axis.title.size <- 30
-  legend.text.size <- 22
-  p <- ggplot2::ggplot(d, ggplot2::aes(patients, fill=coverage)) + ggplot2::geom_bar(ggplot2::aes(weight=bases / exome.length, order=rev(categories.t))) +
+  labs <- gsub(pattern, "", files)
+  axis.text.size <- 14
+  axis.title.size <- 18
+  legend.text.size <- 18
+  
+  theme.for.plot <- ggplot2::theme(
+    axis.title.y = ggplot2::element_text(colour = "#666666"),
+    axis.title.x = ggplot2::element_text(colour = "#666666"),
+    axis.text=ggplot2::element_text(size=axis.text.size),
+    axis.text.x=ggplot2::element_text(angle=45, hjust=1),
+    axis.title=ggplot2::element_text(size=axis.title.size, color="#343123"),
+    legend.text = ggplot2::element_text(colour="#444444", size = legend.text.size, face = "bold")
+  )
+  
+  p <- ggplot2::ggplot(d, ggplot2::aes(patients, fill=coverage)) + 
+    ggplot2::geom_bar(ggplot2::aes(weight=bases / exome.length, order=rev(categories.t))) +
     ggplot2::xlab("Patient") + 
     ggplot2::ylab("% of targeted bases covered") +
-    ggplot2::theme(axis.title.y = ggplot2::element_text(colour = "#666666") ) +
-    ggplot2::theme(axis.title.x = ggplot2::element_text(colour = "#666666")) +
-    ggplot2::theme(axis.text=ggplot2::element_text(size=axis.text.size), axis.title=ggplot2::element_text(size=axis.title.size, color="#343123")) +
-    ggplot2::theme(legend.text = ggplot2::element_text(colour="#444444", size = legend.text.size, face = "bold")) +
-    ggplot2::scale_x_discrete(labels=labs)
+    ggplot2::scale_x_discrete(labels=labs) + theme.for.plot
   
   p
 }
