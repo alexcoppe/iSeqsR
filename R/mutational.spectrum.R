@@ -86,7 +86,7 @@ mutations.spectrum.barchart2 <- function (variants.table) {
     ggplot2::theme(axis.title.x = ggplot2::element_text(colour = "#666666")) +
     ggplot2::ylab("Transition/Transversion Frequency") + 
     ggplot2::theme(axis.title.y = ggplot2::element_text(colour = "#666666")) +
-    ggplot2::theme(axis.text=ggplot2::element_text(size=axis.text.size), axis.text.x=ggplot2::element_text(angle= 45, hjust= 1) axis.title=ggplot2::element_text(size=axis.title.size, color="#999999")) +
+    ggplot2::theme(axis.text=ggplot2::element_text(size=axis.text.size), axis.text.x=ggplot2::element_text(angle= 45, hjust= 1), axis.title=ggplot2::element_text(size=axis.title.size, color="#999999")) +
     ggplot2::theme(plot.title=ggplot2::element_text(colour = "#444444", face = "bold")) +
     ggplot2::scale_fill_discrete(name="") +
     ggplot2::theme(legend.text = ggplot2::element_text(colour="#444444", size = legend.text.size, face = "bold"))
