@@ -78,6 +78,7 @@ mutations.spectrum.barchart2 <- function (variants.table) {
   p <- ggplot2::ggplot(mutation.categories.table, ggplot2::aes(Patient, fill=mut.type), ylim=c(0,1)) + 
     ggplot2::geom_bar(ggplot2::aes(weight=fraction.of.mutation), width=0.8, position = "dodge" ) + 
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'white', colour = '#BBBBBB')) +
+    ggplot2::theme(plot.margin= ggplot2::unit(c(1,0,0,0), "cm")) +
     ggplot2::scale_y_continuous(expand = c(0,0), minor_breaks = seq(0, 1, 0.05) ) +
     ggplot2::theme(panel.grid.major = ggplot2::element_line(colour = "#DDDDDD")) +
     ggplot2::theme(panel.grid.minor = ggplot2::element_line(colour = "#AAAAAA", linetype = "dotted")) +
