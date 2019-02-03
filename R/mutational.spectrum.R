@@ -36,19 +36,25 @@ choice.axis.text.size <- function (samples.number) {
 }
 
 
-##' Build a barchart with mutational spectrum per patient
+##' Builds a barchart with mutational spectrum per patients
 ##' 
-##' Build a barchart with mutational spectrum of six transition and transversion categories for each patient.
+##' Builds a barchart with mutational spectrum of six transition and transversion categories for each patient.
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with chr, pos, ref, alt and Patient columns.
+##' @param sample.font.size The size of the x and y axes text
+##' @param axis.title.size The size of the x and y axes titles
+##' @param plot.title.size The size of the plot title
 ##' @return A ggplot object
 ##'
 ##' @export
-mutations.spectrum.barchart <- function (variants.table) {
+mutations.spectrum.barchart <- function (variants.table, sample.font.size = 12, 
+                                         axis.title.size = 14, plot.title.size = 16) {
   mutation.categories.table <- build.mutation.categories.table(variants.table)
   
   #This functions needs refactoring, should create a singe ggplot theme
-  p <- ggplot2::ggplot(mutation.categories.table, ggplot2::aes(Patient, fill=mut.type)) + ggplot2::geom_bar(ggplot2::aes(weight=fraction.of.mutation), width=0.95 ) +
+  p <- ggplot2::ggplot(mutation.categories.table, ggplot2::aes(Patient, fill=mut.type)) + 
+    ggplot2::geom_bar(ggplot2::aes(weight=fraction.of.mutation), width=0.95 ) +
+    theme(plot.title = element_text(size=plot.title.size, hjust=0.5)) +
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'white', colour = 'white')) +
     ggplot2::scale_y_continuous(expand = c(0,0)) +
     ggplot2::ggtitle("Mutation spectrum of six transition (Ti) and transversion (Tv) categories") +
@@ -57,7 +63,8 @@ mutations.spectrum.barchart <- function (variants.table) {
     ggplot2::theme(axis.title.x = ggplot2::element_text(colour = "#666666")) +
     ggplot2::ylab("Transition/Transversion Frequency") + 
     ggplot2::theme(axis.title.y = ggplot2::element_text(colour = "#666666")) +
-    ggplot2::theme(axis.text=ggplot2::element_text(size=12, angle=45), axis.title=ggplot2::element_text(size=14, color="#444444"))
+    ggplot2::guides(fill=guide_legend(title="")) +
+    ggplot2::theme(axis.text=ggplot2::element_text(size=sample.font.size, angle=45, hjust = 1), axis.title=ggplot2::element_text(size=axis.title.size, color="#444444"))
   p
 }
 
