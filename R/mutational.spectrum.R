@@ -44,6 +44,7 @@ choice.axis.text.size <- function (samples.number) {
 ##' @param sample.font.size The size of the x and y axes text
 ##' @param axis.title.size The size of the x and y axes titles
 ##' @param plot.title.size The size of the plot title
+##' @param legend.text.size The size of the legend characters size
 ##' @return A ggplot object
 ##'
 ##' @export
@@ -78,6 +79,7 @@ mutations.spectrum.barchart <- function (variants.table, sample.font.size = 12,
 ##' @param axis.title.size The size of the x and y axes titles
 ##' @param sample.font.size The size of the x and y axes text
 ##' @param plot.title.size The size of the plot title
+##' @param legend.text.size The size of the legend characters size
 ##' @return A ggplot object
 ##'
 ##' @export
