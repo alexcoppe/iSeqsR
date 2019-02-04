@@ -76,16 +76,19 @@ mutations.spectrum.barchart <- function (variants.table, sample.font.size = 12,
 ##' @return A ggplot object
 ##'
 ##' @export
-mutations.spectrum.barchart2 <- function (variants.table) {
+mutations.spectrum.barchart2 <- function (variants.table, axis.title.size = 16, 
+                                          legend.text.size = 22, sample.font.size = 12,
+                                          plot.title.size = 24) {
   mutation.categories.table <- build.mutation.categories.table(variants.table)
   samples.number <- dplyr::select(variants.table,Patient) %>% unique() %>% nrow()
   axis.text.size <- choice.axis.text.size(samples.number)
-  axis.title.size <- 30
-  legend.text.size <- 22
+
   p <- ggplot2::ggplot(mutation.categories.table, ggplot2::aes(Patient, fill=mut.type), ylim=c(0,1)) + 
     ggplot2::geom_bar(ggplot2::aes(weight=fraction.of.mutation), width=0.8, position = "dodge" ) + 
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = 'white', colour = '#BBBBBB')) +
     ggplot2::theme(plot.margin= ggplot2::unit(c(1,0,0,0), "cm")) +
+    ggplot2::ggtitle("Mutation spectrum of six transition (Ti) and transversion (Tv) categories") +
+    ggplot2::theme(plot.title = element_text(size=plot.title.size, hjust=0.5)) +
     ggplot2::scale_y_continuous(expand = c(0,0), minor_breaks = seq(0, 1, 0.05) ) +
     ggplot2::theme(panel.grid.major = ggplot2::element_line(colour = "#DDDDDD")) +
     ggplot2::theme(panel.grid.minor = ggplot2::element_line(colour = "#AAAAAA", linetype = "dotted")) +
@@ -94,7 +97,7 @@ mutations.spectrum.barchart2 <- function (variants.table) {
     ggplot2::theme(axis.title.x = ggplot2::element_text(colour = "#666666")) +
     ggplot2::ylab("Transition/Transversion Frequency") + 
     ggplot2::theme(axis.title.y = ggplot2::element_text(colour = "#666666")) +
-    ggplot2::theme(axis.text=ggplot2::element_text(size=axis.text.size), axis.text.x=ggplot2::element_text(angle= 45, hjust= 1), axis.title=ggplot2::element_text(size=axis.title.size, color="#999999")) +
+    ggplot2::theme(axis.text=ggplot2::element_text(size=axis.text.size), axis.text.x=ggplot2::element_text(size=sample.font.size, angle= 45, hjust= 1), axis.title=ggplot2::element_text(size=axis.title.size, color="#999999")) +
     ggplot2::theme(plot.title=ggplot2::element_text(colour = "#444444", face = "bold")) +
     ggplot2::scale_fill_discrete(name="") +
     ggplot2::theme(legend.text = ggplot2::element_text(colour="#444444", size = legend.text.size, face = "bold"))
