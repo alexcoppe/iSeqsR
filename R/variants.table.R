@@ -49,10 +49,16 @@ summarise.variants.by.patient <- function (variants.table) {
 ##' 
 ##' @param variants.table A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and key columns. Key column should be a column with the following string: chr,pos,alt,ref
 ##' @param color.by column from variants.table data frame to be used to color the bars
+##' @param x.font.size The size of the x font
+##' @param y.font.size The size of the y font
+##' @param x.title.size The size of the x title
+##' @param y.title.size The size of the y title
 ##' @return A barchart with the number of variants in each patient.
 ##'
 ##' @export
-patients.by.number.of.variants.plot <- function (variants.table, color.by="") {
+patients.by.number.of.variants.plot <- function (variants.table, color.by="",
+                                                 x.font.size=10, y.font.size=10,
+                                                 x.title.size=12, y.title.size=12) {
   variants.by.patient <- summarise.variants.by.patient(variants.table)
   
   if (color.by != "") {
@@ -71,9 +77,11 @@ patients.by.number.of.variants.plot <- function (variants.table, color.by="") {
   sorted.by.mutations$Patient <- factor(sorted.by.mutations$Patient, levels = sorted.by.mutations$Patient)
   
   theme.for.plot <- ggplot2::theme(
-    axis.title.x = ggplot2::element_text(face="bold", colour="#333333", size=18),
-    axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, size=13,color="#333333"),
-    legend.position=legend
+    axis.title.x = ggplot2::element_text(face="bold", colour="#333333", size=x.title.size),
+    axis.title.y = ggplot2::element_text(face="bold", colour="#333333", size=y.title.size),
+    axis.text.y = ggplot2::element_text(angle = 0, hjust = 1, size=y.font.size, color="#333333"),
+    legend.position = legend,
+    axis.text.x = ggplot2::element_text(size=x.font.size, angle=45, hjust = 1, color="#333333"),
     #legend.title=ggplot2::element_blank()
   )
   
