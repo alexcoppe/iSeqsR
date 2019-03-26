@@ -2,17 +2,25 @@
 % Please edit documentation in R/mutational.spectrum.R
 \name{mutations.spectrum.barchart}
 \alias{mutations.spectrum.barchart}
-\title{Build a barchart with mutational spectrum per patient}
+\title{Builds a barchart with mutational spectrum per patients}
 \usage{
-mutations.spectrum.barchart(variants.table)
+mutations.spectrum.barchart(variants.table, sample.font.size = 12,
+  axis.title.size = 14, plot.title.size = 16, legend.text.size = 22)
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with chr, pos, ref, alt and Patient columns.}
+
+\item{sample.font.size}{The size of the x and y axes text}
+
+\item{axis.title.size}{The size of the x and y axes titles}
+
+\item{plot.title.size}{The size of the plot title}
+
+\item{legend.text.size}{The size of the legend characters size}
 }
 \value{
 A ggplot object
 }
 \description{
-Build a barchart with mutational spectrum of six transition and transversion categories for each patient.
+Builds a barchart with mutational spectrum of six transition and transversion categories for each patient.
 }
-

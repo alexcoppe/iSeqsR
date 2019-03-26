@@ -4,7 +4,8 @@
 \alias{summarise.variants.by.impact}
 \title{Summarises the number of variants by impact}
 \usage{
-summarise.variants.by.impact(variants.table, impacts = c("MODERATE", "HIGH"))
+\method{summarise}{variants.by.impact}(variants.table,
+  impacts = c("MODERATE", "HIGH"))
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and key columns. Key column should be a column with the following string: chr,pos,alt,ref}
@@ -18,4 +19,3 @@ A named vector with the number of variants for each impact
 Given variants data obtained with read.variants.tsv, returns a data frame with the number of variats per impact
 The returned data.frame has column for each impact specified by the impacts parameter
 }
-

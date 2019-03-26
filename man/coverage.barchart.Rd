@@ -27,4 +27,3 @@ directory <- dirname(fpath)
 coverage.barchart(path = directory, pattern="-coverage-hist.txt$", intervals = c(0,10,20,30,50))
 
 }
-

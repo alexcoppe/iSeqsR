@@ -18,4 +18,3 @@ A dplyr tbl_df with variants information
 Reads a tab separated file with variants information produced by vcf_2_table.py script from iSeqs suite https://github.com/alexcoppe/iSeqs
 Can load data from any tsv file, it only requires a column called "Patient"
 }
-

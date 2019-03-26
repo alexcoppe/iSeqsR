@@ -23,4 +23,3 @@ directory <- dirname(fpath)
 coverage.cumulative.distribution.plot(path = directory, pattern="-coverage-hist.txt$")
 
 }
-

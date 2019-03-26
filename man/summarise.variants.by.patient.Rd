@@ -4,7 +4,7 @@
 \alias{summarise.variants.by.patient}
 \title{Summarises the number of variants per patient}
 \usage{
-summarise.variants.by.patient(variants.table)
+\method{summarise}{variants.by.patient}(variants.table)
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with impact, Patient and key columns. Key column should be a column with the following string: chr,pos,alt,ref}
@@ -17,4 +17,3 @@ Given variants data obtained with read.variants.tsv, returns a data frame with t
 The returned data.frame has 3 columns: total number of variants, number of variants with MODERATE predicted impact and 
 number of variants with HIGH predicted impact for each patient.
 }
-

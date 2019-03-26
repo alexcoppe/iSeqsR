@@ -4,10 +4,19 @@
 \alias{mutations.spectrum.barchart2}
 \title{Build a barchart with mutational spectrum per patient}
 \usage{
-mutations.spectrum.barchart2(variants.table)
+mutations.spectrum.barchart2(variants.table, axis.title.size = 16,
+  legend.text.size = 22, sample.font.size = 12, plot.title.size = 24)
 }
 \arguments{
 \item{variants.table}{A tbl_df obtained with read.variants.tsv function or a data frame with chr, pos, ref, alt and Patient columns.}
+
+\item{axis.title.size}{The size of the x and y axes titles}
+
+\item{legend.text.size}{The size of the legend characters size}
+
+\item{sample.font.size}{The size of the x and y axes text}
+
+\item{plot.title.size}{The size of the plot title}
 }
 \value{
 A ggplot object
@@ -15,4 +24,3 @@ A ggplot object
 \description{
 Build a barchart with mutational spectrum of six transition and transversion categories for each patient.
 }
-

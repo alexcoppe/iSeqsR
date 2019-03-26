@@ -16,4 +16,3 @@ a data frame with variants obtained by merging all variant tables in the variant
 Merges variants tables obtained from read.variants.tsv function. It uses chromosome, genomic position, reference, alternative allele as a key.
 In the case of a variant present in both tables it uses columns for the first table.
 }
-

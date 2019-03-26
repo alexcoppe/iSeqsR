@@ -22,4 +22,3 @@ A matrix plot with mutated genes vs patient
 \description{
 Given variants data obtained with read.variants.tsv, plots a matrix plot of mutated genes vs patient.
 }
-

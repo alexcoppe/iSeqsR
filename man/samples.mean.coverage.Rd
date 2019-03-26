@@ -21,4 +21,3 @@ directory <- dirname(fpath)
 samples.mean.coverage(path = directory, pattern="-coverage-hist.txt$")
 
 }
-

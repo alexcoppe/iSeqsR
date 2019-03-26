@@ -4,8 +4,8 @@
 \alias{coMut.plot.main}
 \title{Produces a very basic coMut plot.}
 \usage{
-coMut.plot.main(all.variants, min.occurence = 2, legend.position = "right",
-  feature = "impact")
+coMut.plot.main(all.variants, min.occurence = 2,
+  legend.position = "right", feature = "impact")
 }
 \arguments{
 \item{min.occurence}{Minimun number of patient in which the gene should be mutated to be included in the plot}
@@ -21,4 +21,3 @@ A ggplot
 Given a variants table data frame, builds a very basic coMut plot (https://www.broadinstitute.org/blog/visualizing-cancer-genome).
 The plot shows mutation type at gene level. It also shows if a gene in a sample is hit by mutation with different types.
 }
-

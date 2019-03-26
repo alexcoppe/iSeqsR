@@ -18,4 +18,3 @@ a data frame with variants from both t1 and t2. If a variant is present in both 
 Merges two variants tables obtained from read.variants.tsv function. It uses chromosome, genomic position, reference, alternative allele as a key.
 In the case of a variant present in both tables it uses columns for the first table.
 }
-

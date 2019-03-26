@@ -15,4 +15,3 @@ A tbl_df with 2 columns: gene name, number of patients in which the
 \description{
 Given variants data obtained with read.variants.tsv, returns a data frame with the number of patients in which a gene is found mutated.
 }
-
