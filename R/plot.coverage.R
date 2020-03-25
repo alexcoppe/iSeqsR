@@ -63,7 +63,7 @@ coverage.barchart <- function (path=".", intervals=c(0,5,10,20,30, 50), pattern=
     axis.title=ggplot2::element_text(size=axis.title.size, color="#343123"),
     legend.text = ggplot2::element_text(colour="#444444", size = legend.text.size, face = "bold")
   )
-  
+
   p <- ggplot2::ggplot(d, ggplot2::aes(patients, fill=coverage)) + 
     ggplot2::geom_bar(ggplot2::aes(weight=bases / exome.length, order=rev(categories.t))) +
     ggplot2::xlab("Patient") + 

@@ -19,19 +19,20 @@ data.for.fishplot <- function(data, diagnosis = "C01_ES_C03_REM", relapse = "C02
   data.filtered.by.coverage <- data %>% dplyr::filter(COVERAGE >= coverage)
   # Obtain VAF as 100%
   data.filtered.by.coverage$VAF <- data.filtered.by.coverage$VAF * 100
-  
   # VAF and GENE data from diagnosis
   diagnosis.data <- data.filtered.by.coverage %>% dplyr::filter(SAMPLE_NAME == diagnosis) %>% 
     dplyr::select(VAF, GENE)
+  diagnosis.data <- diagnosis.data %>% dplyr::group_by(GENE) %>% dplyr::summarise(VAF_DIAGNOSIS = mean(VAF))
   # VAF and GENE data from relapse
   relapse.data <- data.filtered.by.coverage %>% dplyr::filter(SAMPLE_NAME == relapse) %>% 
     dplyr::select(VAF, GENE)
+  relapse.data <- relapse.data %>% dplyr::group_by(GENE) %>% dplyr::summarise(VAF_RELAPSE = mean(VAF))
   # VAF and GENE data from relapse II
   if (relapse2 != FALSE){
     relapse2.data <- data.filtered.by.coverage %>% dplyr::filter(SAMPLE_NAME == relapse2) %>% 
       dplyr::select(VAF, GENE)
+    relapse2.data <- relapse2.data %>% dplyr::group_by(GENE) %>% dplyr::summarise(VAF_RELAPSE2 = mean(VAF))
   }
-  
   # Join the samples by GENE column
   diagnosis.and.relapse.data <- dplyr::full_join(diagnosis.data, relapse.data, by = "GENE")
   if (relapse2 != FALSE){
@@ -40,10 +41,10 @@ data.for.fishplot <- function(data, diagnosis = "C01_ES_C03_REM", relapse = "C02
   
   # Change names of VAF.x and VAF.y
   if (relapse2 != FALSE) {
-    colnames(diagnosis.and.relapse.data) <- c("VAF_DIAGNOSIS", "GENE", "VAF_RELAPSE", "VAF_RELAPSE2")
+    colnames(diagnosis.and.relapse.data) <- c("GENE", "VAF_DIAGNOSIS", "VAF_RELAPSE", "VAF_RELAPSE2")
   } 
   else {
-    colnames(diagnosis.and.relapse.data) <- c("VAF_DIAGNOSIS", "GENE", "VAF_RELAPSE")
+    colnames(diagnosis.and.relapse.data) <- c("GENE", "VAF_DIAGNOSIS", "VAF_RELAPSE")
   }
   
   # Change NA to 0
@@ -51,9 +52,10 @@ data.for.fishplot <- function(data, diagnosis = "C01_ES_C03_REM", relapse = "C02
   
   # Filter diagnosis.and.relapse.data with VAF > 5 in at least one sample
   filtered.diagnosis.and.relapse.data <-  diagnosis.and.relapse.data %>% dplyr::filter(VAF_DIAGNOSIS > min.vaf | VAF_RELAPSE > min.vaf)
-  
+
   filtered.diagnosis.and.relapse.data
 }
+
 
 ##' Get a matrix with VAF_DIAGNOSIS, VAF_RELAPSE and eventualy VAF_RELAPSE2 columns and GENES as row names to ben passed todbscan::dbscan
 ##' 
